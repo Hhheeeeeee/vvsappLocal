@@ -2,6 +2,10 @@
 
 require_once 'config.php';
 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     http_response_code(400);
     echo json_encode(["error" => "Invalid or missing 'id' parameter."]);
@@ -39,16 +43,32 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if (curl_errno($ch)) {
+    $error_msg = curl_error($ch);
+    http_response_code(500);
+    echo json_encode(["error" => "cURL error: $error_msg"]);
+    curl_close($ch);
+    exit;
+}
+
 curl_close($ch);
 
 if ($httpCode === 200) {
+
     $data = json_decode($response, true);
+
+
     if (empty($data['data'])) {
         http_response_code(404);
         echo json_encode(["error" => "User not found."]);
         exit;
     }
-    echo json_encode($data['data'][0], JSON_PRETTY_PRINT);
+
+    //echo $response;
+    //echo json_encode($data['data'][0], JSON_PRETTY_PRINT);
+    echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
+
 } elseif ($httpCode === 400) {
     http_response_code(400);
     echo json_encode(["error" => "Invalid request."]);
