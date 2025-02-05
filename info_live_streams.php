@@ -61,7 +61,20 @@ if ($httpCode === 200) {
 
     //echo $response;
     //echo json_encode($data['data'][0], JSON_PRETTY_PRINT);
-    echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
+    //echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
+
+    $streams = [];
+    foreach($data['data'] as $stream) {
+        $streams[] = [
+            "title" => $stream['title'],
+            "user_name" => $stream['user_name'],
+        ];
+    }
+
+
+    //echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
+
 
 } elseif ($httpCode === 400) {
     http_response_code(400);
