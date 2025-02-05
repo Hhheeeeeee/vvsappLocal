@@ -6,13 +6,7 @@ require_once 'config.php';
 //ini_set('display_startup_errors', 1);
 //error_reporting(E_ALL);
 
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    http_response_code(400);
-    echo json_encode(["error" => "Invalid or missing 'id' parameter."]);
-    exit;
-}
-
-$userId = $_GET['id']; // Se obtiene de la URL
+// Se obtiene de la URL
 $tokenFile = "token.json";
 
 if (!file_exists($tokenFile)) {
@@ -31,7 +25,7 @@ if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
 
 $accessToken = $tokenData['access_token'];
 $clientId = CLIENT_ID;
-$url = "https://api.twitch.tv/helix/users?id=$userId";
+$url = "https://api.twitch.tv/helix/streams";
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -67,7 +61,20 @@ if ($httpCode === 200) {
 
     //echo $response;
     //echo json_encode($data['data'][0], JSON_PRETTY_PRINT);
-    echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
+    //echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
+
+    $streams = [];
+    foreach($data['data'] as $stream) {
+        $streams[] = [
+            "title" => $stream['title'],
+            "user_name" => $stream['user_name'],
+        ];
+    }
+
+
+    //echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
+
 
 } elseif ($httpCode === 400) {
     http_response_code(400);
@@ -83,5 +90,6 @@ if ($httpCode === 200) {
     echo json_encode(["error" => "Internal server error."]);
 }
 ?>
+
 
 
