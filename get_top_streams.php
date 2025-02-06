@@ -84,24 +84,13 @@ $enrichedStreams = array_map(function($stream) use ($usersMap) {
         "viewer_count" => $stream['viewer_count'],
         "title" => $stream['title'],
         "user_display_name" => $user['display_name'] ?? "Unknown",
-        "profile_image_url" => $user['profile_image_url'] ?? ""
+        "profile_image_url" => $user['profile_image_url'] ?? "https://static-cdn.jtvnw.net/jtv_user_pictures/default-profile_image.png"
     ];
 }, $streams);
 
-// Ajustar al formato sugerido
-$finalOutput = array_map(function($stream) {
-    return [
-        "stream_id" => $stream['stream_id'],
-        "user_id" => $stream['user_id'],
-        "user_name" => $stream['user_name'],
-        "viewer_count" => $stream['viewer_count'],
-        "title" => $stream['title'],
-        "user_display_name" => $stream['user_display_name'],
-        "profile_image_url" => $stream['profile_image_url'] 
-    ];
-}, $enrichedStreams);
+// Ordenar los streams por número de espectadores
+usort($enrichedStreams, fn($a, $b) => $b['viewer_count'] - $a['viewer_count']);
 
-usort($finalOutput, fn($a, $b) => $b['viewer_count'] - $a['viewer_count']);
-
-echo json_encode($finalOutput, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+// Generar JSON sin \/ en las URLs
+echo str_replace('\/', '/', json_encode($enrichedStreams, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 ?>
