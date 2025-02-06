@@ -1,4 +1,5 @@
 <?php
+// info_live_streams.php - Caso 2: Consultar streams en vivo
 
 require_once 'config.php';
 
