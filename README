@@ -2,6 +2,7 @@
 
 Este proyecto proporciona una serie de endpoints para analizar datos de Twitch de manera sencilla.
 A continuación, se detallan las instrucciones para ejecutar el proyecto en un entorno local (Windows) o en el servidor.
+En el primer caso de uso, el formarto no aparece como está indica. Habría que añadir un json_pretty_print.
 
 ---
 
