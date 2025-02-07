@@ -17,11 +17,20 @@ A continuación, se detallan las instrucciones para ejecutar el proyecto en un e
 
 Para realizar solicitudes seguras a través de HTTPS es necesario habilitar las extensiones curl y openssl en PHP.
 Para ello, edita el archivo de configuración "php.ini" (si aparece como "php.ini-development",
-haz una copia y renómbrala eliminando "-development") y asegúrate de incluir las siguientes líneas:
+haz una copia y renómbrala eliminando "-development") y asegúrate de incluir las siguientes líneas (descomentarlas):
 
-php.ini
-extension=curl;
-extension=openssl;
+   php.ini:
+   extension=curl;
+   extension=openssl;
+
+Si se selecciona (como es recomendado y seguto) curl setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+Es decir, si activas la verificación SSL (CURLOPT_SSL_VERIFYPEER en true), es necesario asegurarte de que el certificado
+SSL del servidor con el que te comunicas sea válido.
+Tiene que existir unn cacert.pem (incuido en el proyecto) y hay que modificar el php.ini.
+
+   php.ini:
+   curl.cainfo = "C:\ruta\a\cacert.pem";
+   (incluyendo el archivo)
 
 ---
 ## Ejecución en Local (Windows)
