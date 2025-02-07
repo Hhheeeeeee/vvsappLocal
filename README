@@ -1,7 +1,7 @@
 ----------------------------------- Twitch Analytics ------------------------------------------
 
 Este proyecto proporciona una serie de endpoints para analizar datos de Twitch de manera sencilla.
-A continuación, se detallan las instrucciones para ejecutar el proyecto en un entorno local (Windows).
+A continuación, se detallan las instrucciones para ejecutar el proyecto en un entorno local (Windows) o en el servidor.
 
 ---
 
@@ -61,3 +61,18 @@ El archivo que hemos descargado nosotras es de mozilla (https://curl.se/docs/cae
     http://localhost:8000/analytics/streams/enriched?limit=3 (podemos poner un número determinado)
 
 ---
+## Ejecución en producción 
+
+1. Utilizar el navegador o una herramienta como Postman para acceder a los siguientes endpoints:
+
+   http://twitchanalytics.42web.io.chickenkiller.com/analytics/user?id=123
+   http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams
+   http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams/enriched?limit=3
+
+Se puede utilizar tanto el subdominio : twitchanalytics.42web.io.chickenkiller.com
+como la ip 34.56.178.39
+
+   http://34.56.178.39/analytics/user?id=123
+   http://34.56.178.39/analytics/streams
+   http://34.56.178.39/analytics/streams/enriched?limit=3
+
