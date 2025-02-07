@@ -44,7 +44,7 @@ El archivo que hemos descargado nosotras es de mozilla.
 2. Iniciar el servidor de desarrollo integrado de PHP:
 
    Ejecuta el siguiente comando:
-   php -S localhost:8000
+   php -S localhost:8000 router.php       
 
    Nota: Si se prefiere usar otro puerto (por ejemplo 3000), reemplaza 8000 por el puerto deseado.
    Asegúrate de actualizar las URLs de los endpoints en consecuencia.
@@ -52,14 +52,12 @@ El archivo que hemos descargado nosotras es de mozilla.
 3. Endpoints
     Utiliza tu navegador o una herramienta como Postman para acceder a los siguientes endpoints:
 
-    http://localhost:8000/get_token_test.php
+    http://localhost:8000/analytics/user?id=123
+    http://localhost:8000/analytics/user (Si ponermos esto no funciona ya que necesita un id)
 
-    http://localhost:8000/info_streamer.php/user?id=1234
-    http://localhost:8000/info_streamer.php (Si ponermos esto no funciona ya que necesita un id)
-    http://localhost:8000/info_live_streams.php
+    http://localhost:8000/analytics/streams
 
-    http://localhost:8000/get_top_streams.php (por defecto da 10)
-    http://localhost:8000/get_top_streams.php/enriched?limit=3 (podemos poner un número determinado)
-
+    http://localhost:8000/analytics/streams/enriched (por defecto da 10)
+    http://localhost:8000/analytics/streams/enriched?limit=3 (podemos poner un número determinado)
 
 ---
