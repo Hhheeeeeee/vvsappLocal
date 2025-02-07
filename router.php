@@ -2,7 +2,6 @@
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Si existe un archivo físico que coincida con la solicitud, se sirve directamente.
 if (file_exists(__DIR__ . $uri)) {
     return false;
 }
