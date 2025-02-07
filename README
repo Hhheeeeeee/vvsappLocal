@@ -26,7 +26,8 @@ haz una copia y renómbrala eliminando "-development") y asegúrate de incluir l
 Si se selecciona (como es recomendado y seguto) curl setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 Es decir, si activas la verificación SSL (CURLOPT_SSL_VERIFYPEER en true), es necesario asegurarte de que el certificado
 SSL del servidor con el que te comunicas sea válido.
-Tiene que existir unn cacert.pem (incuido en el proyecto) y hay que modificar el php.ini.
+Tiene que existir unn cacert.pem (incuido en el proyecto y descargado de internet) y hay que modificar el php.ini.
+El archivo que hemos descargado nosotras es de mozilla.
 
    php.ini:
    curl.cainfo = "C:\ruta\a\cacert.pem";
