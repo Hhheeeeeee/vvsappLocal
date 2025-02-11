@@ -4,6 +4,9 @@
 
 require_once 'config.php';
 
+// Establecer encabezado JSON antes de imprimir cualquier salida
+header('Content-Type: application/json; charset=utf-8');
+
 // Permitir parámetros desde CLI (línea de comandos)
 if (php_sapi_name() == "cli") {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
