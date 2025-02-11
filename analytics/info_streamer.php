@@ -74,7 +74,7 @@ if ($httpCode === 200) {
 
     header('Content-Type: application/json');
     http_response_code($httpCode);
-    echo "<pre>". json_encode($formattedData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
+    echo json_encode($formattedData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 } else {
     http_response_code($httpCode);
     echo json_encode(["error" => "Twitch API request failed."]);
