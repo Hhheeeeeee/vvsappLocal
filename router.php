@@ -6,7 +6,6 @@ if (file_exists(__DIR__ . $uri)) {
     return false;
 }
 
-// Enrutamiento según la ruta solicitada
 switch ($uri) {
     case '/analytics/user':
         require_once __DIR__ . '/analytics/info_streamer.php';

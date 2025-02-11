@@ -1,21 +1,20 @@
 <?php
-// get_top_streams.php - Obtener streams en vivo ordenados y enriquecidos
 
 require_once 'config.php';
-
+require_once 'get_token_test.php';
 $tokenFile = "token.json";
 
 if (!file_exists($tokenFile)) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. No valid token found."]);
-    exit;
+    $obtener_Token = getNewToken();
 }
 
 $tokenData = json_decode(file_get_contents($tokenFile), true);
 if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-    exit;
+    $obtener_Token = getNewToken();
 }
 
 $accessToken = $tokenData['access_token'];
@@ -45,7 +44,6 @@ if ($httpCode !== 200) {
 $data = json_decode($response, true);
 $streams = $data['data'] ?? [];
 
-// Obtener información adicional de los usuarios
 $userIds = array_map(fn($stream) => $stream['user_id'], $streams);
 $userIdsQuery = implode("&id=", $userIds);
 $urlUsers = "https://api.twitch.tv/helix/users?id=$userIdsQuery";
@@ -74,7 +72,6 @@ foreach ($userData as $user) {
     $usersMap[$user['id']] = $user;
 }
 
-// Enriquecer la información de los streams con datos de usuario
 $enrichedStreams = array_map(function($stream) use ($usersMap) {
     $user = $usersMap[$stream['user_id']] ?? [];
     return [
@@ -88,7 +85,6 @@ $enrichedStreams = array_map(function($stream) use ($usersMap) {
     ];
 }, $streams);
 
-// Ajustar al formato sugerido
 $finalOutput = array_map(function($stream) {
     return [
         "stream_id" => $stream['stream_id'],
@@ -105,7 +101,6 @@ usort($finalOutput, function ($a, $b) {
     return $b['viewer_count'] - $a['viewer_count'];
 });
 
-// echo json_encode($finalOutput, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
 
-?>
+

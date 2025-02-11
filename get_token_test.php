@@ -1,12 +1,10 @@
 <?php
 
-// get_token_test.php - Obtención de token mejorado
 
 require_once 'config.php';
 
 $tokenFile = "token.json";
 
-// Función para obtener un nuevo token
 function getNewToken() {
     $params = [
         'client_id' => CLIENT_ID,
@@ -43,18 +41,13 @@ function getNewToken() {
     return $tokenData;
 }
 
-// Verificar si hay un token válido
 if (file_exists($tokenFile)) {
     $tokenData = json_decode(file_get_contents($tokenFile), true);
     if (isset($tokenData['access_token'], $tokenData['expires_at']) && time() <= $tokenData['expires_at']) {
         http_response_code(200);
-        echo json_encode($tokenData);
-        exit;
+        return $tokenData;
     }
 }
 
-// Si no hay un token válido, obtener uno nuevo
 $tokenData = getNewToken();
-http_response_code(200);
-echo json_encode($tokenData);
-?>
+

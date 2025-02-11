@@ -1,19 +1,15 @@
 <?php
-// info_live_streams.php - Caso 2: Consultar streams en vivo
 
+require_once 'get_token_test.php';
 require_once 'config.php';
 
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
-//error_reporting(E_ALL);
 
-// Se obtiene de la URL
 $tokenFile = "token.json";
 
 if (!file_exists($tokenFile)) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. No valid token found."]);
-    exit;
+    $obtener_Token = getNewToken();
 }
 
 $tokenData = json_decode(file_get_contents($tokenFile), true);
@@ -21,7 +17,7 @@ $tokenData = json_decode(file_get_contents($tokenFile), true);
 if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-    exit;
+    $obtener_Token = getNewToken();
 }
 
 $accessToken = $tokenData['access_token'];
@@ -60,10 +56,6 @@ if ($httpCode === 200) {
         exit;
     }
 
-    //echo $response;
-    //echo json_encode($data['data'][0], JSON_PRETTY_PRINT);
-    //echo "<pre>" . json_encode($data['data'][0], JSON_PRETTY_PRINT) . "</pre>";
-
     $streams = [];
     foreach($data['data'] as $stream) {
         $streams[] = [
@@ -73,7 +65,6 @@ if ($httpCode === 200) {
     }
 
 
-    //echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
 
 
@@ -90,7 +81,7 @@ if ($httpCode === 200) {
     http_response_code(500);
     echo json_encode(["error" => "Internal server error."]);
 }
-?>
+
 
 
 
