@@ -4,9 +4,6 @@
 
 require_once 'config.php';
 
-// Establecer encabezado JSON antes de imprimir cualquier salida
-header('Content-Type: application/json; charset=utf-8');
-
 // Permitir parámetros desde CLI (línea de comandos)
 if (php_sapi_name() == "cli") {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
@@ -66,13 +63,20 @@ if ($httpCode === 200) {
     // Formatear la respuesta correctamente sin barras escapadas
     $userData = $data['data'][0];
 
-    // Reemplazar valores vacíos con "N/A"
-    foreach ($userData as $key => $value) {
-        if (empty($value)) {
-            $userData[$key] = "N/A";
-        }
-    }
-
+    // Formatear los datos para cumplir con el formato requerido
+        $formattedData = [
+            "id" => $userData['id'] ?? "N/A",
+            "login" => $userData['login'] ?? "N/A",
+            "display_name" => $userData['display_name'] ?? "N/A",
+            "type" => $userData['type'] ?? "",
+            "broadcaster_type" => $userData['broadcaster_type'] ?? "N/A",
+            "description" => $userData['description'] ?? "N/A",
+            "profile_image_url" => $userData['profile_image_url'] ?? "N/A",
+            "offline_image_url" => $userData['offline_image_url'] ?? "N/A",
+            "view_count" => $userData['view_count'] ?? 0,
+            "created_at" => $userData['created_at'] ?? "N/A",
+    ];
+    // Devolver los datos formateados
     echo json_encode($userData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES| JSON_UNESCAPED_UNICODE);
 } else {
     http_response_code($httpCode);
