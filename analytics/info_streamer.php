@@ -72,6 +72,7 @@ if ($httpCode === 200) {
             "created_at" => $userData['created_at'] ?? "N/A",
     ];
 
+    header('Content-Type: application/json');
     http_response_code($httpCode);
     echo "<pre>". json_encode($formattedData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
 } else {
