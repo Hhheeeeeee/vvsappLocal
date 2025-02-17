@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         if (!preg_match($patron, $email)) {
-            // Si el email no es válido, enviamos la misma respuesta de error
             http_response_code(400);
             echo json_encode(["error" => "The email must be a valid email address"]);
             exit;
@@ -31,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         http_response_code(200);
-        echo json_encode(["api_key"=>generaToken()]);
+        echo json_encode(["api_key"=>generaAPIkey()]);
         exit;
 
     }
@@ -43,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 }
 
-function generaToken(){
+function generaAPIkey(){
     $longitud = 64;
     $bytes = random_bytes($longitud);
     return bin2hex($bytes);
