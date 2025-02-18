@@ -1,59 +1,80 @@
 <?php
 
-// Simulación de almacenamiento de API Keys y tokens (debe usarse una base de datos en producción)
-$usuarios_registrados = [
-    "usuario@example.com" => "abcd1234efgh5678"
-];
+require_once 'config.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    header('Content-Type: application/json');
 
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    if (!isset($input['email']) || empty($input['email'])) {
+    if (!isset($_POST['email']) || empty($_POST['email'])) {
         http_response_code(400);
         echo json_encode(["error" => "The email is mandatory"]);
         exit;
     }
 
-    if (!isset($input['api_key']) || empty($input['api_key'])) {
+    if (!isset($_POST['api_key']) || empty($_POST['api_key'])) {
         http_response_code(400);
         echo json_encode(["error" => "The api_key is mandatory"]);
         exit;
     }
 
-    $email = $input['email'];
-    $api_key = $input['api_key'];
-
-    // Validación del email
-    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+    $email = $_POST['email'];
+    $apiKey = $_POST['api_key'];
+    
+    //Validar el formato del enail
+    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?$/";
     if (!preg_match($patron, $email)) {
         http_response_code(400);
         echo json_encode(["error" => "The email must be a valid email address"]);
         exit;
     }
 
-    // Validación de la API Key
-    if (!array_key_exists($email, $usuarios_registrados) || $usuarios_registrados[$email] !== $api_key) {
-        http_response_code(401);
-        echo json_encode(["error" => "Unauthorized. API access token is invalid."]);
-        exit;
+    $conn = null;
+
+    try {
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
+
+        // Verificar si el email y la API Key son válidos
+        $stmt = $conn->prepare("SELECT U.ID FROM USUARIOS U JOIN API_KEY A ON U.ID = A.USUARIO_ID WHERE U.EMAIL = ? AND A.API_KEY = ?");
+        $stmt->bind_param("ss", $email, $apiKey);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            // Generar token de sesión con expiración de 3 días
+            $token = generaToken();
+            $expiracion = time() + (3 * 24 * 60 * 60); // 3 días en segundos
+
+            // Guardar el token en la base de datos
+            $stmt = $conn->prepare("INSERT INTO SESSION_TOKENS (USUARIO_ID, TOKEN, EXPIRATION) VALUES (?, ?, FROM_UNIXTIME(?))");
+            $stmt->bind_param("isi", $row['ID'], $token, $expiracion);
+            $stmt->execute();
+            $stmt->close();
+
+            http_response_code(200);
+            echo json_encode(["token" => $token]);
+        } else {
+            http_response_code(401);
+            echo json_encode(["error" => "Unauthorized. API access token is invalid."]);
+        }
+    } catch (mysqli_sql_exception $e) {
+        http_response_code(500);
+        echo json_encode(["error" => "Internal server error"]);
+    } finally {
+        if ($conn instanceof mysqli) {
+            $conn->close();
+        }
     }
 
-    // Generar Token con expiración de 3 días (256 bits de seguridad)
-    $token = bin2hex(random_bytes(32));
-    $expiracion = time() + (3 * 24 * 60 * 60); // 3 días en segundos
-
-    // Responder con el token
-    http_response_code(200);
-    echo json_encode([
-        "token" => $token,
-        "expires_at" => date("Y-m-d H:i:s", $expiracion)
-    ]);
     exit;
 }
 
-// Respuesta si no es una solicitud POST
-http_response_code(405);
-echo json_encode(["error" => "Method Not Allowed"]);
-exit;
+// Función para generar un token aleatorio seguro
+function generaToken() {
+    return bin2hex(random_bytes(32)); // Token de 64 caracteres
+}
+
+?>
