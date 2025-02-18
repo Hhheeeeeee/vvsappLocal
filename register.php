@@ -50,17 +50,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
 
             //meter una fila
-
-            $stmt = $conn->prepare("INSERT INTO USUARIOS (EMAIL) VALUES (?)");
+            $stmt = $conn->prepare("SELECT ID FROM USUARIOS WHERE EMAIL = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
-            $userId = $stmt->insert_id;
-            $stmt->close();
+            $result = $stmt->get_result();
 
-            $stmt = $conn->prepare("INSERT INTO API_KEY (USUARIO_ID, API_KEY) VALUES (?, ?)");
-            $stmt->bind_param("is", $userId, $apiKey);
-            $stmt->execute();
-            $stmt->close();
+            if ($row = $result->fetch_assoc()) {
+                $stmt = $conn->prepare("UPDATE API_KEY SET API_KEY = ? WHERE USUARIO_ID = ?");
+                $stmt->bind_param("si", $apiKey, $row['ID']);
+                $stmt->execute();
+                $stmt->close();
+                $stmt = $conn->prepare("UPDATE API_KEY SET FECHA_CREACION = CURRENT_TIMESTAMP WHERE USUARIO_ID = ?");
+                $stmt->bind_param("i", $row['ID']);
+                $stmt->execute();
+                $stmt->close();
+
+            }
+            else {
+
+                $stmt = $conn->prepare("INSERT INTO USUARIOS (EMAIL) VALUES (?)");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $userId = $stmt->insert_id;
+                $stmt->close();
+
+                $stmt = $conn->prepare("INSERT INTO API_KEY (USUARIO_ID, API_KEY) VALUES (?, ?)");
+                $stmt->bind_param("is", $userId, $apiKey);
+                $stmt->execute();
+                $stmt->close();
+            }
 
 
         } catch (mysqli_sql_exception $e) {
