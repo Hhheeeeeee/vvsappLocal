@@ -1,8 +1,15 @@
 <?php
 
+require_once 'config.php';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+
+    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?$/";
 
     if (isset($_POST['email'])){
         $email = $_POST['email'];
@@ -30,7 +37,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         http_response_code(200);
-        echo json_encode(["api_key"=>generaAPIkey()]);
+        $apiKey = generaAPIkey();
+        echo json_encode(["api_key"=>$apiKey]);
+
+
+
+
+        $conn = null;
+        try {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+            $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
+
+            //meter una fila
+
+            $stmt = $conn->prepare("INSERT INTO USUARIOS (EMAIL) VALUES (?)");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $userId = $stmt->insert_id;
+            $stmt->close();
+
+            $stmt = $conn->prepare("INSERT INTO API_KEY (USUARIO_ID, API_KEY) VALUES (?, ?)");
+            $stmt->bind_param("is", $userId, $apiKey);
+            $stmt->execute();
+            $stmt->close();
+
+
+        } catch (mysqli_sql_exception $e) {
+            echo "Error en la conexión: " . $e->getCode() . " - " . $e->getMessage();
+        } finally {
+            if ($conn instanceof mysqli) {
+                $conn->close();
+            }
+        }
+
         exit;
 
     }
