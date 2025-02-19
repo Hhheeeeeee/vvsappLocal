@@ -8,7 +8,6 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';
 require_once __DIR__ . '/../get_token_test.php';
 
-// Verificar el token antes de ejecutar cualquier código
 $usuario = validarToken(); // Obtener los datos del usuario autenticado
 
 
