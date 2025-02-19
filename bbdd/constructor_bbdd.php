@@ -1,15 +1,10 @@
 <?php
 
-$servername = "34.56.178.39";
-$username = "hajar_mysql";
-$password = "LasGrecas2025.";
-$dbname = "twich_analytics";
-
 $conn = null;
 try {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
     echo "Conexión exitosa a la base de datos.\n";
     $sql = file_get_contents('init.sql');
     if ($sql  == false){
