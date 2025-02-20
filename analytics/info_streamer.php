@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';
 require_once __DIR__ . '/../get_token_test.php';
 
+
 // Verificar el token antes de ejecutar cualquier código
 $usuario = validarToken(); // Obtener los datos del usuario autenticado
 
@@ -40,7 +41,7 @@ $url = "https://api.twitch.tv/helix/users?id=$userId";
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Authorization: Bearer $accessToken",
     "Client-ID: $clientId"

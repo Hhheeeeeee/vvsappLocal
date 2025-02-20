@@ -1,9 +1,5 @@
 <?php
 
-require_once 'get_token_test.php';
-require_once 'config.php';
-
-
 $tokenFile = "token.json";
 
 require_once __DIR__ . '/../config.php';
