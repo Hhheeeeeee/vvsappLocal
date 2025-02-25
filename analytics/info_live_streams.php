@@ -49,6 +49,12 @@ if (curl_errno($ch)) {
 
 curl_close($ch);
 
+
+if ($httpCode !== 200) {
+    $errorDetails = curl_getinfo($ch);
+    echo "<pre>" . print_r($errorDetails, true) . "</pre>";
+}
+
 if ($httpCode === 200) {
 
     $data = json_decode($response, true);
