@@ -4,4 +4,4 @@
 RewriteEngine On
 
 # Redirigir todas las solicitudes a route.php
-RewriteRule ^(.*)$ route.php [QSA,L]
+RewriteRule ^(.*)$ router.php [QSA,L]
