@@ -1,0 +1,7 @@
+# .htaccess
+
+# Habilitar el módulo de reescritura (rewrite)
+RewriteEngine On
+
+# Redirigir todas las solicitudes a route.php
+RewriteRule ^(.*)$ route.php [QSA,L]
