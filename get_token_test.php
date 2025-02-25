@@ -3,7 +3,9 @@
 
 require_once 'config.php';
 
-$tokenFile = "token.json";
+//$tokenFile = "token.json";
+$tokenFile = __DIR__ . "/analytics/token.json"; // Accede al archivo 'token.json' dentro de la carpeta 'analytics'
+
 
 function getNewToken() {
     $params = [
