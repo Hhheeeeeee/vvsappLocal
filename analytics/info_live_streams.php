@@ -1,6 +1,7 @@
 <?php
 
-$tokenFile = "token.json";
+//$tokenFile = "token.json"; --> heroku selecciona primero lo que esta en la raiz
+$tokenFile = __DIR__ . "/token.json";
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';

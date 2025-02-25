@@ -1,7 +1,8 @@
 <?php
 
 
-$tokenFile = "token.json";
+//$tokenFile = "token.json";
+$tokenFile = __DIR__ . "/token.json";
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';

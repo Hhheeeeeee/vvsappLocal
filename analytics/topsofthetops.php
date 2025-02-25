@@ -6,7 +6,9 @@ require_once __DIR__ . '/../get_token_test.php';
 
 $usuario = validarToken(); // Obtener los datos del usuario autenticado
 
-$tokenFile = "token.json";
+//$tokenFile = "token.json";
+$tokenFile = __DIR__ . "/token.json";
+
 
 if (!file_exists($tokenFile)) {
     http_response_code(401);
