@@ -77,7 +77,7 @@ if ($httpCode === 200) {
     echo json_encode(["error" => "Invalid request."]);
 } elseif ($httpCode === 401) {
     http_response_code(401);
-    echo json_encode(["error" => "Unauthorized. Token expired or invalid."]);
+    echo json_encode(["error" => "Unauthorized. Token expireddddd or invalid."]);
 } elseif ($httpCode === 404) {
     http_response_code(404);
     echo json_encode(["error" => "User not found."]);
