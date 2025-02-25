@@ -28,6 +28,14 @@ $accessToken = $tokenData['access_token'];
 $clientId = CLIENT_ID;
 $url = "https://api.twitch.tv/helix/streams";
 
+// Imprimir el token y el Client ID que se están usando
+error_log("Access Token: " . $accessToken);
+error_log("Client ID: " . $clientId);
+
+echo "Using Access Token: " . $accessToken . PHP_EOL;
+echo "Using Client ID: " . $clientId . PHP_EOL;
+
+
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
