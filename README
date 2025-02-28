@@ -68,6 +68,7 @@ El archivo que hemos descargado nosotras es de mozilla (https://curl.se/docs/cae
 
    http://twitchanalytics.42web.io.chickenkiller.com/analytics/user?id=123
    http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/streams
    http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams/enriched
    http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams/enriched?limit=3
 
