@@ -8,7 +8,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $protectedRoutes = [
     '/analytics/user',
     '/analytics/streams',
-    '/analytics/streams/enriched'
+    '/analytics/streams/enriched',
     '/analytics/topsofthetops'
 ];
 
