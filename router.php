@@ -9,6 +9,7 @@ $protectedRoutes = [
     '/analytics/user',
     '/analytics/streams',
     '/analytics/streams/enriched'
+    '/analytics/topsofthetops'
 ];
 
 // Si la ruta está protegida, validar el token
@@ -29,6 +30,9 @@ switch ($uri) {
         break;
     case '/analytics/streams/enriched':
         require_once __DIR__ . '/analytics/get_top_streams.php';
+        break;
+    case '/analytics/topsofthetops': // Nuevo endpoint
+        require_once __DIR__ . '/analytics/topsofthetops.php';
         break;
     case '/token': // Nueva ruta para token2.php
         require_once __DIR__ . '/token2.php';
