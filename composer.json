@@ -1,4 +1,7 @@
 {
+    "require": {
+        "php": "^7.4 || ^8.0"
+    },
     "require-dev": {
         "phpro/grumphp": "^1.13"
     },
