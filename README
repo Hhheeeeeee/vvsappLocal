@@ -66,17 +66,15 @@ El archivo que hemos descargado nosotras es de mozilla (https://curl.se/docs/cae
 
 1. Utilizar el navegador o una herramienta como Postman para acceder a los siguientes endpoints:
 
-   http://twitchanalytics.42web.io.chickenkiller.com/analytics/user?id=123
-   http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams
+
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/user?id=123
    https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/streams
-   http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams/enriched
-   http://twitchanalytics.42web.io.chickenkiller.com/analytics/streams/enriched?limit=3
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/streams
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/streams/enriched
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/analytics/streams/enriched?limit=3
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/register (Ejemplo de email válido: "email" => "usuario@vvsapp.com")
+   https://vvsapp-dd7d031e3c8f.herokuapp.com/token  (Ejemplo de uso: "email" => "usuario@vvsapp.com",
+                                                                      "api_key" => "clave-api-generada")
 
-Se puede utilizar tanto el subdominio : twitchanalytics.42web.io.chickenkiller.com
-como la ip 34.56.178.39
 
-   http://34.56.178.39/analytics/user?id=123
-   http://34.56.178.39/analytics/streams
-   http://34.56.178.39/analytics/streams/enriched
-   http://34.56.178.39/analytics/streams/enriched?limit=3
 
