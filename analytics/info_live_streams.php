@@ -84,7 +84,7 @@ if ($httpCode === 200) {
     }
 
 
-    echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
+    echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 
 } elseif ($httpCode === 400) {

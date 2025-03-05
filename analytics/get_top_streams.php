@@ -109,6 +109,6 @@ usort($finalOutput, function ($a, $b) {
     return $b['viewer_count'] - $a['viewer_count'];
 });
 
-echo "<pre>" . json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "</pre>";
+echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 
 
