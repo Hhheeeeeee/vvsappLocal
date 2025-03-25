@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!preg_match($patron, $email)) {
         http_response_code(400);
-        echo json_encode(["error" => "The email must be a valid email address"]);
+        echo json_encode(["error" => "The email must be a valid email addresss"]);
         exit;
     }
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($correo_dominio !== $dominio) {
         http_response_code(400);
-        echo json_encode(["error" => "The email must be a valid email address"]);
+        echo json_encode(["error" => "The email must be a valid email address."]);
         exit;
     }
 
