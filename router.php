@@ -14,7 +14,7 @@ $protectedRoutes = [
 
 if ($uri !== '/' && $uri !== '/register' && in_array($uri, $protectedRoutes)) {
     require_once __DIR__ . '/validaToken.php'; // Incluir la validación del token solo si la ruta lo requiere
-    echo "Validando token para: $uri<br>"; // Solo se ejecutará para rutas protegidas
+    //echo "Validando token para: $uri<br>"; // Solo se ejecutará para rutas protegidas
     validarToken();
 }
 
