@@ -2,14 +2,12 @@
 
 echo "Router ejecutándose...<br>";  // Para ver que se está ejecutando el router
 
-require_once __DIR__ . '/validaToken.php'; // Incluir la validación del token
-
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = rtrim($uri, '/'); // Eliminar barra final si existe
 
 echo "Ruta solicitada: $uri<br>";  // Verifica el valor de $uri
 
-// Verificar si la ruta requiere autenticación, EXCLUYENDO la raíz '/'
+// Verificar si la ruta requiere autenticación, EXCLUYENDO la raíz '/' y '/register'
 $protectedRoutes = [
     '/analytics/user',
     '/analytics/streams',
@@ -17,9 +15,9 @@ $protectedRoutes = [
     '/analytics/topsofthetops'
 ];
 
-// Si la ruta está protegida, validar el token
-// Excluimos explícitamente la ruta raíz '/'
-if ($uri !== '/' && in_array($uri, $protectedRoutes)) {
+// Verificamos si la ruta no está en la lista de rutas protegidas
+if ($uri !== '/' && $uri !== '/register' && in_array($uri, $protectedRoutes)) {
+    require_once __DIR__ . '/validaToken.php'; // Incluir la validación del token solo si la ruta lo requiere
     echo "Validando token para: $uri<br>"; // Solo se ejecutará para rutas protegidas
     validarToken();
 }
