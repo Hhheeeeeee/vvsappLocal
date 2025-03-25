@@ -1,11 +1,14 @@
 <?php
 
+echo "Router ejecutándose...<br>";
+
 require_once __DIR__ . '/validaToken.php'; // Incluir la validación del token
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = rtrim($uri, '/'); 
+$uri = rtrim($uri, '/'); // Normalizar la URL
 
-// Verificar si la ruta requiere autenticación
+echo "Ruta solicitada: $uri<br>";
+
 $protectedRoutes = [
     '/analytics/user',
     '/analytics/streams',
@@ -13,10 +16,10 @@ $protectedRoutes = [
     '/analytics/topsofthetops'
 ];
 
-// Si la ruta está protegida, validar el token
+// Verificar si la ruta está protegida antes de validar el token
 if (in_array($uri, $protectedRoutes)) {
-    echo "llamando a validaToken";
-    validarToken(); // Llamar a la función que valida el token
+    echo "Validando token para: $uri<br>";
+    validarToken();
 }
 
 if (file_exists(__DIR__ . $uri)) {
@@ -33,13 +36,14 @@ switch ($uri) {
     case '/analytics/streams/enriched':
         require_once __DIR__ . '/analytics/get_top_streams.php';
         break;
-    case '/analytics/topsofthetops': // Nuevo endpoint
+    case '/analytics/topsofthetops':
         require_once __DIR__ . '/analytics/topsofthetops.php';
         break;
-    case '/token': // Nueva ruta para token2.php
+    case '/token':
         require_once __DIR__ . '/token2.php';
         break;
-    case '/register': // Nueva ruta para register.php
+    case '/register':
+        echo "Cargando register.php...<br>";
         require_once __DIR__ . '/register.php';
         break;
     default:
