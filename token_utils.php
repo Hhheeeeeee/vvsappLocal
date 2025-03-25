@@ -12,7 +12,8 @@ function validarToken() {
 
     if (!isset($headers["Authorization"])) {
         http_response_code(401);
-        return ["error" => "Unauthorized. Token missingg."];
+        echo json_encode(["error" => "Unauthorized. Token missing."]);
+        exit;
     }
 
     $auth_header = $headers["Authorization"];
@@ -20,7 +21,8 @@ function validarToken() {
 
     if ($token_type !== "Bearer") {
         http_response_code(401);
-        return ["error" => "Unauthorized. Invalid token format."];
+        echo json_encode(["error" => "Unauthorized. Invalid token format."]);
+        exit;
     }
 
     try {
@@ -29,12 +31,14 @@ function validarToken() {
 
         if ($decoded_array['exp'] < time()) {
             http_response_code(401);
-            return ["error" => "Unauthorized. Token has expired."];
+            echo json_encode(["error" => "Unauthorized. Token has expired."]);
+            exit;
         }
 
         return $decoded_array;
     } catch (Exception $e) {
         http_response_code(401);
-        return ["error" => "Unauthorized. Invalid or expired token."];
+        echo json_encode(["error" => "Unauthorized. Invalid or expired token."]);
+        exit;
     }
 }
