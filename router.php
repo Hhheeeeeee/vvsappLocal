@@ -3,6 +3,7 @@
 require_once __DIR__ . '/validaToken.php'; // Incluir la validación del token
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = rtrim($uri, '/'); 
 
 // Verificar si la ruta requiere autenticación
 $protectedRoutes = [
@@ -14,6 +15,7 @@ $protectedRoutes = [
 
 // Si la ruta está protegida, validar el token
 if (in_array($uri, $protectedRoutes)) {
+    echo "llamando a validaToken";
     validarToken(); // Llamar a la función que valida el token
 }
 
