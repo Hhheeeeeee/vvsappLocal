@@ -12,7 +12,7 @@ function validarToken() {
 
     if (!isset($headers["Authorization"])) {
         http_response_code(401);
-        return ["error" => "Unauthorized. Token missing."];
+        return ["error" => "Unauthorized. Token missingg."];
     }
 
     $auth_header = $headers["Authorization"];
