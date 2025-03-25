@@ -35,7 +35,7 @@ function validarToken() {
             exit;
         }
 
-        return $decoded_array;
+        //return $decoded_array;
     } catch (Exception $e) {
         http_response_code(401);
         echo json_encode(["error" => "Unauthorized. Invalid or expired token."]);
