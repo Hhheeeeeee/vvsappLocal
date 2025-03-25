@@ -11,7 +11,7 @@ if (isset($decodedToken["error"])) {
     exit;
 }
 
-echo json_encode([
-    "message" => "Token is valid",
-    "user" => $decodedToken
-], JSON_PRETTY_PRINT);
+//echo json_encode([
+//    "message" => "Token is valid",
+//    "user" => $decodedToken
+//], JSON_PRETTY_PRINT);
