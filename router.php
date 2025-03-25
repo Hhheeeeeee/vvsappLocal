@@ -39,11 +39,10 @@ switch ($uri) {
         require_once __DIR__ . '/token2.php';
         break;
     case '/register':
-        echo "Cargando register.php...<br>";
         require_once __DIR__ . '/register.php';
         break;
     default:
         header("HTTP/1.0 404 Not Found");
-        echo "404 - Página no encontrada";
+        //echo "404 - Página no encontrada";
         break;
 }
