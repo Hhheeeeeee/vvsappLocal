@@ -8,37 +8,38 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
+    $data = json_decode(file_get_contents('php://input'), true);
 
-
-    if (!isset($_POST['email'])) {
+    if (!isset($data['email'])) {
         http_response_code(400);
         echo json_encode(["error" => "The email is mandatory"]);
         exit;
     }
 
-    $email = $_POST['email'];
-    $dominio = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? 'Desconocido';
+    $email = $data['email'];
+    //$dominio = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? 'Desconocido';
 
-    if (strtolower($dominio) === "desconocido") {
+   /* if (strtolower($dominio) === "desconocido") {
         http_response_code(500);
         echo json_encode(["error" => "Internal server error"]);
         exit;
-    }
+    }*/
 
+    // Validar formato de email
+    $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
     if (!preg_match($patron, $email)) {
         http_response_code(400);
-        echo json_encode(["error" => "The email must be a valid email addresss"]);
+        echo json_encode(["error" => "The email must be a valid email address"]);
         exit;
     }
 
-    $correo_dominio = explode('@', $email)[1];
+    /*$correo_dominio = explode('@', $email)[1];
 
     if ($correo_dominio !== $dominio) {
         http_response_code(400);
         echo json_encode(["error" => "The email must be a valid email address."]);
         exit;
-    }
+    }*/
 
     http_response_code(200);
     $apiKey = generaAPIkey();
