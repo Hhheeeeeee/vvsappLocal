@@ -9,39 +9,50 @@ require 'config.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-
-require_once 'config.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Verificar si la solicitud es POST
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     return;
 }
 
-if (!isset($_POST['email']) || empty($_POST['email'])) {
+// Leer el cuerpo de la solicitud
+$inputData = file_get_contents("php://input");
+
+// Intentar decodificar el JSON recibido
+$data = json_decode($inputData, true);
+
+if (!$data) {
+    http_response_code(400);
+    echo json_encode(["error" => "Invalid JSON format"]);
+    exit;
+}
+
+// Verificar si se han proporcionado email y api_key
+if (!isset($data['email']) || empty($data['email'])) {
     http_response_code(400);
     echo json_encode(["error" => "The email is mandatory"]);
     exit;
 }
 
-if (!isset($_POST['api_key']) || empty($_POST['api_key'])) {
+if (!isset($data['api_key']) || empty($data['api_key'])) {
     http_response_code(400);
     echo json_encode(["error" => "The api_key is mandatory"]);
     exit;
 }
 
-$email = $_POST['email'];
-$apiKey = $_POST['api_key'];
+$email = $data['email'];
+$apiKey = $data['api_key'];
 
-$patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?$/";
+// Validar formato de email
+$patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
 if (!preg_match($patron, $email)) {
     http_response_code(400);
     echo json_encode(["error" => "The email must be a valid email address"]);
     exit;
 }
-
 
 $conn = null;
 
@@ -49,28 +60,25 @@ try {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
 
+    // Validar si el email y la api_key son correctos
     $stmt = $conn->prepare("SELECT U.ID FROM USUARIOS U JOIN API_KEY A ON U.ID = A.USUARIO_ID WHERE U.EMAIL = ? AND A.API_KEY = ?");
     $stmt->bind_param("ss", $email, $apiKey);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-
-        //$token = generaToken(); --> JWT genera el token, no nosotras y ademas "la almacena"
+        // Generar el token JWT
         $expiration = time() + (3 * 24 * 60 * 60); // 3 días en segundos
 
-        // Generar el token JWT
         $payload = [
             "email" => $email,
-            "exp" => time() + $expiration // Expira en 3 días
+            "exp" => $expiration // Expira en 3 días
         ];
 
         $token = JWT::encode($payload, SECRET_KEY, 'HS256');
 
-
         http_response_code(200);
         echo json_encode(["token" => $token]);
-
     } else {
         http_response_code(401);
         echo json_encode(["error" => "Unauthorized. API access token is invalid."]);
@@ -83,10 +91,6 @@ try {
         $conn->close();
     }
 }
-
-
-
-
 
 
 
