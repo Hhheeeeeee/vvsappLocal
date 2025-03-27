@@ -5,7 +5,7 @@ $tokenFile = __DIR__ . "/token.json";
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';
-require_once __DIR__ . '/../get_token_test.php';
+//require_once __DIR__ . '/../get_token_test.php';
 
 // Verificar el token antes de ejecutar cualquier código
 $usuario = validarToken(); // Obtener los datos del usuario autenticado
@@ -18,7 +18,6 @@ if (!file_exists($tokenFile)) {
 }
 
 $tokenData = json_decode(file_get_contents($tokenFile), true);
-unset($tokenData["access_token"], $tokenData["expires_in"], $tokenData["token_type"], $tokenData["expires_at"]);
 
 if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
     http_response_code(401);
