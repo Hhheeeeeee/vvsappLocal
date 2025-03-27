@@ -33,8 +33,8 @@ $url = "https://api.twitch.tv/helix/streams";
 error_log("Access Token: " . $accessToken);
 error_log("Client ID: " . $clientId);
 
-echo "Using Access Token: " . $accessToken . PHP_EOL;
-echo "Using Client ID: " . $clientId . PHP_EOL;
+//echo "Using Access Token: " . $accessToken . PHP_EOL;
+//echo "Using Client ID: " . $clientId . PHP_EOL;
 
 
 $ch = curl_init($url);
