@@ -23,8 +23,16 @@ CREATE TABLE IF NOT EXISTS SESSION_TOKENS (
     FOREIGN KEY (USUARIO_ID) REFERENCES USUARIOS(ID) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS cached_topsofthetops (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    data JSON NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS top_videos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    game_id TEXT NOT NULL,
+    game_name TEXT NOT NULL,
+    user_name TEXT NOT NULL,
+    total_videos INTEGER NOT NULL,
+    total_views INTEGER NOT NULL,
+    most_viewed_title TEXT NOT NULL,
+    most_viewed_views INTEGER NOT NULL,
+    most_viewed_duration TEXT NOT NULL,
+    most_viewed_created_at TEXT NOT NULL,
+    cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
