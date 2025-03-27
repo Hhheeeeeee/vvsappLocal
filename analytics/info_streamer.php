@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';
-require_once __DIR__ . '/../get_token_test.php';
+//require_once __DIR__ . '/../get_token_test.php';
 
 $tokenFile = __DIR__ . "/token.json";
 
@@ -75,8 +75,6 @@ if ($httpCode === 200) {
         "view_count" => $userData['view_count'] ?? 0,
         "created_at" => $userData['created_at'] ?? "N/A",
     ];
-
-    unset($tokenData["access_token"], $tokenData["expires_in"], $tokenData["token_type"], $tokenData["expires_at"]);
 
     header('Content-Type: application/json');
     http_response_code($httpCode);
