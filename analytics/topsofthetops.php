@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../validaToken.php';
 require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../utils.php';
+$tokenFile = __DIR__ . "/token.json";
 
 header('Content-Type: application/json');
 
