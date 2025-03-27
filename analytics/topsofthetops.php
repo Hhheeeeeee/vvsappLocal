@@ -1,125 +1,92 @@
 <?php
-
-require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../validaToken.php';
-require_once __DIR__ . '/../get_token_test.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../utils.php';
 
-$usuario = validarToken(); // Obtener los datos del usuario autenticado
+header('Content-Type: application/json');
 
-//$tokenFile = "token.json";
+// Verificar token
+$usuario = validarToken();
+if (!$usuario) {
+    http_response_code(401);
+    echo json_encode(["error" => "Unauthorized. Invalid token."]);
+    exit;
+}
+
+$db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Comprobar caché (menos de 10 minutos)
+$stmt = $db->query("SELECT * FROM top_videos WHERE cached_at >= datetime('now', '-10 minutes')");
+$cached = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (count($cached) > 0 && !isset($_GET["since"])) {
+    echo json_encode($cached, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
+}
+
+// Obtener token válido
 $tokenFile = __DIR__ . "/token.json";
-
-
 if (!file_exists($tokenFile)) {
-    http_response_code(401);
-    echo json_encode(["error" => "Unauthorized. No valid token found."]);
+    http_response_code(500);
+    echo json_encode(["error" => "Twitch token not found"]);
     exit;
 }
-
 $tokenData = json_decode(file_get_contents($tokenFile), true);
-if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
-    http_response_code(401);
-    echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-    exit;
-}
-
-$accessToken = $tokenData['access_token'];
+$accessToken = $tokenData["access_token"];
 $clientId = CLIENT_ID;
 
-$since = isset($_GET['since']) ? intval($_GET['since']) : null;
-
-$conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Internal server error. Database connection failed."]);
-    exit;
-}
-
-// Verificar si los datos en caché son válidos
-$query = "SELECT * FROM cached_topsofthetops WHERE created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)";
-if ($since) {
-    $query .= " AND created_at > FROM_UNIXTIME($since)";
-}
-
-$result = $conn->query($query);
-if ($result && $result->num_rows > 0) {
-    $cachedData = $result->fetch_assoc();
-    echo $cachedData['data'];
-    exit;
-}
-
-// Obtener los juegos más populares
-$url = "https://api.twitch.tv/helix/games/top?first=3";
-$ch = curl_init($url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
+// 1. Obtener los 3 juegos más populares
+$gamesUrl = "https://api.twitch.tv/helix/games/top?first=3";
+$headers = [
     "Authorization: Bearer $accessToken",
     "Client-ID: $clientId"
-]);
-
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-if ($httpCode !== 200) {
-    http_response_code($httpCode);
-    echo json_encode(["error" => "Failed to retrieve top games from Twitch."]);
+];
+$gamesResponse = httpRequest($gamesUrl, $headers);
+$gamesData = json_decode($gamesResponse, true);
+if (!isset($gamesData["data"])) {
+    http_response_code(500);
+    echo json_encode(["error" => "Failed to fetch top games"]);
     exit;
 }
 
-$topGames = json_decode($response, true)['data'];
-$topResults = [];
+$results = [];
+$db->exec("DELETE FROM top_videos");
 
-foreach ($topGames as $game) {
-    $gameId = $game['id'];
-    $gameName = $game['name'];
+foreach ($gamesData["data"] as $game) {
+    $gameId = $game["id"];
+    $gameName = $game["name"];
 
-    // Obtener los 40 videos más vistos del juego
-    $url = "https://api.twitch.tv/helix/videos?game_id=$gameId&first=40&sort=view_count";
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer $accessToken",
-        "Client-ID: $clientId"
-    ]);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    // 2. Obtener vídeos del juego
+    $videosUrl = "https://api.twitch.tv/helix/videos?game_id=$gameId&first=40&sort=views";
+    $videosResponse = httpRequest($videosUrl, $headers);
+    $videosData = json_decode($videosResponse, true);
 
-    if ($httpCode !== 200) {
-        continue;
+    if (isset($videosData["data"]) && count($videosData["data"]) > 0) {
+        $videos = $videosData["data"];
+        $totalVideos = count($videos);
+        $totalViews = array_sum(array_column($videos, "view_count"));
+        $mostViewed = $videos[0];
+
+        $entry = [
+            "game_id" => $gameId,
+            "game_name" => $gameName,
+            "user_name" => $mostViewed["user_name"],
+            "total_videos" => $totalVideos,
+            "total_views" => $totalViews,
+            "most_viewed_title" => $mostViewed["title"],
+            "most_viewed_views" => $mostViewed["view_count"],
+            "most_viewed_duration" => $mostViewed["duration"],
+            "most_viewed_created_at" => $mostViewed["created_at"]
+        ];
+
+        $stmt = $db->prepare("INSERT INTO top_videos (game_id, game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at)
+        VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, :most_viewed_title, :most_viewed_views, :most_viewed_duration, :most_viewed_created_at)");
+        $stmt->execute($entry);
+
+        $results[] = $entry;
     }
-
-    $videos = json_decode($response, true)['data'];
-    if (empty($videos)) {
-        continue;
-    }
-
-    $mostViewed = $videos[0];
-    $totalViews = array_sum(array_column($videos, 'view_count'));
-
-    $topResults[] = [
-        "game_id" => $gameId,
-        "game_name" => $gameName,
-        "user_name" => $mostViewed['user_name'],
-        "total_videos" => count($videos),
-        "total_views" => $totalViews,
-        "most_viewed_title" => $mostViewed['title'],
-        "most_viewed_views" => $mostViewed['view_count'],
-        "most_viewed_duration" => $mostViewed['duration'],
-        "most_viewed_created_at" => $mostViewed['created_at']
-    ];
 }
 
-http_response_code(200);
-echo json_encode($topResults, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-// Almacenar en caché
-$data = json_encode($topResults);
-$stmt = $conn->prepare("INSERT INTO cached_topsofthetops (data) VALUES (?)");
-$stmt->bind_param("s", $data);
-$stmt->execute();
-$stmt->close();
-$conn->close();
-
+echo json_encode($results, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ?>
