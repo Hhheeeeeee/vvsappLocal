@@ -30,7 +30,6 @@ if (!file_exists($tokenFile)) {
 }
 
 $tokenData = json_decode(file_get_contents($tokenFile), true);
-unset($tokenData["access_token"], $tokenData["expires_in"], $tokenData["token_type"], $tokenData["expires_at"]);
 
 if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
     http_response_code(401);
@@ -76,6 +75,8 @@ if ($httpCode === 200) {
         "view_count" => $userData['view_count'] ?? 0,
         "created_at" => $userData['created_at'] ?? "N/A",
     ];
+
+    unset($tokenData["access_token"], $tokenData["expires_in"], $tokenData["token_type"], $tokenData["expires_at"]);
 
     header('Content-Type: application/json');
     http_response_code($httpCode);
