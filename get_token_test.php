@@ -6,6 +6,4 @@ header('Content-Type: application/json');
 
 $tokenData = getToken();
 
-//echo json_encode($tokenData);
-
-return $tokenData;
+echo json_encode($tokenData);
