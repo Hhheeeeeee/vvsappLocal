@@ -30,6 +30,8 @@ if (!file_exists($tokenFile)) {
 }
 
 $tokenData = json_decode(file_get_contents($tokenFile), true);
+unset($tokenData["access_token"], $tokenData["expires_in"], $tokenData["token_type"], $tokenData["expires_at"]);
+
 if (!isset($tokenData['access_token']) || time() >= $tokenData['expires_at']) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
