@@ -4,9 +4,11 @@ require_once __DIR__ . '/../config.php';
 
 header('Content-Type: application/json');
 
+echo "HEllo";
 // Verificar token
 $usuario = validarToken();
 
+echo "Usuario verificado";
 
 $db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -15,6 +17,8 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
 // Crear la tabla `top_videos`
+
+echo "creando tablas ..";
 
 $query = "
 CREATE TABLE IF NOT EXISTS top_videos (
