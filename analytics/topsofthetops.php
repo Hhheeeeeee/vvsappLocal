@@ -6,11 +6,7 @@ header('Content-Type: application/json');
 
 // Verificar token
 $usuario = validarToken();
-if (!$usuario) {
-    http_response_code(401);
-    echo json_encode(["error" => "Unauthorized. Invalid token."]);
-    exit;
-}
+
 
 $db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
