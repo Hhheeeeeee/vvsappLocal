@@ -10,32 +10,48 @@ $usuario = validarToken();
 
 echo "Usuario verificado";
 
-$db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+try {
+    $db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Conexión exitosa a la base de datos SQLite.\n";
+} catch (PDOException $e) {
+    echo "Error al conectar a la base de datos: " . $e->getMessage();
+}
 
 //Crear archivo data.sqlite (si no existe) y crear tabla top_videos (si no existe)
-
+$dbPath = __DIR__ . "/../bbdd/data.sqlite";
+if (!file_exists($dbPath)) {
+    echo "El archivo SQLite no existe. Intentando crearlo...\n";
+    touch($dbPath); // Crear el archivo vacío si no existe
+} else {
+    echo "El archivo SQLite ya existe.\n";
+}
 
 // Crear la tabla `top_videos`
 
 echo "creando tablas ..";
 
-$query = "
-CREATE TABLE IF NOT EXISTS top_videos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    game_id TEXT NOT NULL,
-    game_name TEXT NOT NULL,
-    user_name TEXT NOT NULL,
-    total_videos INTEGER NOT NULL,
-    total_views INTEGER NOT NULL,
-    most_viewed_title TEXT NOT NULL,
-    most_viewed_views INTEGER NOT NULL,
-    most_viewed_duration TEXT NOT NULL,
-    most_viewed_created_at TEXT NOT NULL,
-    cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-";
-$db->exec($query);
+try {
+    $query = "
+    CREATE TABLE IF NOT EXISTS top_videos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        game_id TEXT NOT NULL,
+        game_name TEXT NOT NULL,
+        user_name TEXT NOT NULL,
+        total_videos INTEGER NOT NULL,
+        total_views INTEGER NOT NULL,
+        most_viewed_title TEXT NOT NULL,
+        most_viewed_views INTEGER NOT NULL,
+        most_viewed_duration TEXT NOT NULL,
+        most_viewed_created_at TEXT NOT NULL,
+        cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    ";
+    $db->exec($query);
+    echo "Tabla 'top_videos' creada o ya existe.";
+} catch (PDOException $e) {
+    echo "Error al crear la tabla: " . $e->getMessage();
+}
 
 echo "Tabla 'top_videos' creada o ya existe.";
 
