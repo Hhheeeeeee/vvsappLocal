@@ -4,7 +4,7 @@
         "firebase/php-jwt": "^6.10",
         "ext-pdo_sqlite": "*"
 
-    },
+    },git
     "require-dev": {
         "phpro/grumphp": "^1.13"
     },
