@@ -8,28 +8,21 @@ echo "HEllo";
 // Verificar token
 $usuario = validarToken();
 
-echo "Usuario verificado";
-
 try {
     $db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Conexión exitosa a la base de datos SQLite.\n";
 } catch (PDOException $e) {
-    echo "Error al conectar a la base de datos: " . $e->getMessage();
+    echo "Error al conectar a la base de datos;
 }
 
 //Crear archivo data.sqlite (si no existe) y crear tabla top_videos (si no existe)
 $dbPath = __DIR__ . "/../bbdd/data.sqlite";
 if (!file_exists($dbPath)) {
-    echo "El archivo SQLite no existe. Intentando crearlo...\n";
     touch($dbPath); // Crear el archivo vacío si no existe
-} else {
-    echo "El archivo SQLite ya existe.\n";
-}
+} 
 
 // Crear la tabla `top_videos`
 
-echo "creando tablas ..";
 
 try {
     $query = "
@@ -48,12 +41,10 @@ try {
     );
     ";
     $db->exec($query);
-    echo "Tabla 'top_videos' creada o ya existe.";
 } catch (PDOException $e) {
-    echo "Error al crear la tabla: " . $e->getMessage();
+    echo "Error al crear la tabla;
 }
 
-echo "Tabla 'top_videos' creada o ya existe.";
 
 // Comprobar caché (menos de 10 minutos)
 $stmt = $db->query("SELECT * FROM top_videos WHERE cached_at >= datetime('now', '-10 minutes')");
@@ -64,7 +55,6 @@ if (count($cached) > 0 && !isset($_GET["since"])) {
     exit;
 }
 
-echo "recogido filas..";
 // Obtener token válido
 $tokenFile = __DIR__ . "/token.json";
 if (!file_exists($tokenFile)) {
@@ -72,11 +62,9 @@ if (!file_exists($tokenFile)) {
     echo json_encode(["error" => "Twitch token not found"]);
     exit;
 }
-echo "tokenFile existe";
 $tokenData = json_decode(file_get_contents($tokenFile), true);
 $accessToken = $tokenData["access_token"];
 $clientId = CLIENT_ID;
-echo "obtenido datos tokenFile";
 
 // 1. Obtener los 3 juegos más populares
 function httpRequest($url, $headers = []) {
