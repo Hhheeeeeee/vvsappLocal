@@ -8,43 +8,52 @@ echo "HEllo";
 // Verificar token
 $usuario = validarToken();
 
+echo "Usuario verificado";
+
 try {
     $db = new PDO("sqlite:" . __DIR__ . "/../bbdd/data.sqlite");
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Conexión exitosa a la base de datos SQLite.\n";
 } catch (PDOException $e) {
-    echo "Error al conectar a la base de datos;
+    echo "Error al conectar a la base de datos: " . $e->getMessage();
 }
 
 //Crear archivo data.sqlite (si no existe) y crear tabla top_videos (si no existe)
 $dbPath = __DIR__ . "/../bbdd/data.sqlite";
 if (!file_exists($dbPath)) {
+    echo "El archivo SQLite no existe. Intentando crearlo...\n";
     touch($dbPath); // Crear el archivo vacío si no existe
-} 
+} else {
+    echo "El archivo SQLite ya existe.\n";
+}
 
 // Crear la tabla `top_videos`
 
+echo "creando tablas ..";
 
 try {
     $query = "
-    CREATE TABLE IF NOT EXISTS top_videos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        game_id TEXT NOT NULL,
-        game_name TEXT NOT NULL,
-        user_name TEXT NOT NULL,
-        total_videos INTEGER NOT NULL,
-        total_views INTEGER NOT NULL,
-        most_viewed_title TEXT NOT NULL,
-        most_viewed_views INTEGER NOT NULL,
-        most_viewed_duration TEXT NOT NULL,
-        most_viewed_created_at TEXT NOT NULL,
-        cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    ";
+     CREATE TABLE IF NOT EXISTS top_videos (
+         id INTEGER PRIMARY KEY AUTOINCREMENT,
+         game_id TEXT NOT NULL,
+         game_name TEXT NOT NULL,
+         user_name TEXT NOT NULL,
+         total_videos INTEGER NOT NULL,
+         total_views INTEGER NOT NULL,
+         most_viewed_title TEXT NOT NULL,
+         most_viewed_views INTEGER NOT NULL,
+         most_viewed_duration TEXT NOT NULL,
+         most_viewed_created_at TEXT NOT NULL,
+         cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+     );
+     ";
     $db->exec($query);
+    echo "Tabla 'top_videos' creada o ya existe.";
 } catch (PDOException $e) {
-    echo "Error al crear la tabla;
+    echo "Error al crear la tabla: " . $e->getMessage();
 }
 
+echo "Tabla 'top_videos' creada o ya existe.";
 
 // Comprobar caché (menos de 10 minutos)
 $stmt = $db->query("SELECT * FROM top_videos WHERE cached_at >= datetime('now', '-10 minutes')");
@@ -55,6 +64,7 @@ if (count($cached) > 0 && !isset($_GET["since"])) {
     exit;
 }
 
+echo "recogido filas..";
 // Obtener token válido
 $tokenFile = __DIR__ . "/token.json";
 if (!file_exists($tokenFile)) {
@@ -62,9 +72,11 @@ if (!file_exists($tokenFile)) {
     echo json_encode(["error" => "Twitch token not found"]);
     exit;
 }
+echo "tokenFile existe";
 $tokenData = json_decode(file_get_contents($tokenFile), true);
 $accessToken = $tokenData["access_token"];
 $clientId = CLIENT_ID;
+echo "obtenido datos tokenFile";
 
 // 1. Obtener los 3 juegos más populares
 function httpRequest($url, $headers = []) {
@@ -134,7 +146,7 @@ foreach ($gamesData["data"] as $game) {
         ];
 
         $stmt = $db->prepare("INSERT INTO top_videos (game_id, game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at)
-        VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, :most_viewed_title, :most_viewed_views, :most_viewed_duration, :most_viewed_created_at)");
+         VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, :most_viewed_title, :most_viewed_views, :most_viewed_duration, :most_viewed_created_at)");
         $stmt->execute($entry);
 
         $results[] = $entry;
