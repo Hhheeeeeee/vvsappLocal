@@ -87,7 +87,6 @@ $headers = [
 $gamesResponse = httpRequest($gamesUrl, $headers);
 try {
     $gamesResponse = httpRequest($gamesUrl, $headers);
-    echo "Respuesta juegos OK\n";
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["error" => "Error al obtener juegos: " . $e->getMessage()]);
