@@ -64,6 +64,7 @@ if (count($cached) > 0 && !isset($_GET["since"])) {
     exit;
 }
 
+echo "recogido filas..";
 // Obtener token válido
 $tokenFile = __DIR__ . "/token.json";
 if (!file_exists($tokenFile)) {
@@ -71,23 +72,48 @@ if (!file_exists($tokenFile)) {
     echo json_encode(["error" => "Twitch token not found"]);
     exit;
 }
+echo "tokenFile existe";
 $tokenData = json_decode(file_get_contents($tokenFile), true);
 $accessToken = $tokenData["access_token"];
 $clientId = CLIENT_ID;
+echo "obtenido datos tokenFile";
 
 // 1. Obtener los 3 juegos más populares
+function httpRequest($url, $headers = []) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        throw new Exception('Curl error: ' . curl_error($ch));
+    }
+    curl_close($ch);
+    return $response;
+}
+
 $gamesUrl = "https://api.twitch.tv/helix/games/top?first=3";
 $headers = [
     "Authorization: Bearer $accessToken",
     "Client-ID: $clientId"
 ];
 $gamesResponse = httpRequest($gamesUrl, $headers);
+try {
+    $gamesResponse = httpRequest($gamesUrl, $headers);
+    echo "Respuesta juegos OK\n";
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["error" => "Error al obtener juegos: " . $e->getMessage()]);
+    exit;
+}
+
 $gamesData = json_decode($gamesResponse, true);
+
 if (!isset($gamesData["data"])) {
     http_response_code(500);
     echo json_encode(["error" => "Failed to fetch top games"]);
     exit;
 }
+echo "campo data existe";
 
 $results = [];
 $db->exec("DELETE FROM top_videos");
