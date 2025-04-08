@@ -12,18 +12,18 @@ function getNewToken() {
     ];
 
     $url = "https://id.twitch.tv/oauth2/token";
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/x-www-form-urlencoded"]);
+    $conn = curl_init();
+    curl_setopt($conn, CURLOPT_URL, $url);
+    curl_setopt($conn, CURLOPT_POST, true);
+    curl_setopt($conn, CURLOPT_POSTFIELDS, http_build_query($params));
+    curl_setopt($conn, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($conn, CURLOPT_HTTPHEADER, ["Content-Type: application/x-www-form-urlencoded"]);
 
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
+    $response = curl_exec($conn);
+    $httpCode = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($conn);
+    curl_close($conn);
 
     if ($httpCode === 0) {
         return [

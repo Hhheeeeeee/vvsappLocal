@@ -33,9 +33,14 @@ grumphp:
             triggered_by: ["php"]
 
         phpmd:
-            ruleset: ["cleancode", "codesize", "naming"]
+            ruleset:
+                - "cleancode"
+                - "codesize"
+                - "naming"
+                - "phpmd.xml"
             exclude:
                 - "vendor"
+                - "StaticAccess"
 
         composer:
             file: "composer.json"

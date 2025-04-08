@@ -1,12 +1,16 @@
 <?php
 
+
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING);
+
+
 require 'vendor/autoload.php';
 require_once 'config.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-function validarToken() {
+function validarToken():void {
     $secret_key = SECRET_KEY;
     $headers = getallheaders();
 
@@ -26,7 +30,10 @@ function validarToken() {
     }
 
     try {
-        $decoded = JWT::decode($token, new Key($secret_key, 'HS256'));
+        $jwt = new JWT();
+        $decoded = $jwt->decode($token, new Key($secret_key, 'HS256'));
+
+        //$decoded = JWT::decode($token, new Key($secret_key, 'HS256'));
         $decoded_array = (array) $decoded; // Convertimos el objeto a array
 
         if ($decoded_array['exp'] < time()) {

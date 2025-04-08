@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../validaToken.php';
 require_once __DIR__ . '/../config.php';
+use Exception;
 
 header('Content-Type: application/json');
 
@@ -68,14 +69,14 @@ $clientId = CLIENT_ID;
 
 // 1. Obtener los 3 juegos más populares
 function httpRequest($url, $headers = []) {
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    $response = curl_exec($ch);
-    if (curl_errno($ch)) {
-        throw new Exception('Curl error: ' . curl_error($ch));
+    $conn = curl_init($url);
+    curl_setopt($conn, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($conn, CURLOPT_HTTPHEADER, $headers);
+    $response = curl_exec($conn);
+    if (curl_errno($conn)) {
+        throw new Exception('Curl error: ' . curl_error($conn));
     }
-    curl_close($ch);
+    curl_close($conn);
     return $response;
 }
 
