@@ -1,13 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../validaToken.php';
-//require_once __DIR__ . '/../get_token_test.php';
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../Auth/validaToken.php';
 
 $tokenFile = __DIR__ . "/token.json";
 
 // Verificar el token antes de ejecutar cualquier código
-$usuario = validarToken(); // Obtener los datos del usuario autenticado
+validarToken(); // Obtener los datos del usuario autenticado
 
 if (php_sapi_name() == "cli") {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
@@ -79,7 +78,6 @@ if ($httpCode === 200) {
     header('Content-Type: application/json');
     http_response_code($httpCode);
     echo json_encode($userData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-
 } else {
     http_response_code($httpCode);
     echo json_encode(["error" => "Twitch API request failed."]);

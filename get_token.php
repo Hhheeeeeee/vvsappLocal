@@ -2,7 +2,7 @@
 
 require_once 'config.php';
 
-$tokenFile = __DIR__ . "/analytics/token.json"; // Accede al archivo 'token.json' dentro de la carpeta 'analytics'
+$tokenFile = __DIR__ . "/Analytics/token.json"; // Accede al archivo 'token.json' dentro de la carpeta 'analytics'
 
 function getNewToken() {
     $params = [

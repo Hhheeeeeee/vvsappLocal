@@ -1,6 +1,7 @@
 <?php
 
-require_once 'config.php';
+require_once __DIR__ . '/../../config.php';
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -22,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $email = $_POST['email'];
     $apiKey = $_POST['api_key'];
-    
     //Validar el formato del enail
     $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?$/";
     if (!preg_match($patron, $email)) {

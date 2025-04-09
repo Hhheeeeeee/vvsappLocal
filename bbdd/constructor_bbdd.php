@@ -9,12 +9,12 @@ try {
     $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
     echo "Conexión exitosa a la base de datos.\n";
     $sql = file_get_contents('init.sql');
-    if ($sql  == false){
+    if (!$sql) {
         die("Error en la base de datos: " . mysqli_connect_error() . "\n");
     }
-    if($conn -> multi_query($sql)){
+    if ($conn -> multi_query($sql)) {
         echo "Tablas creadas correctamente" . "\n";
-    }else{
+    } else {
         echo "Error en la base de datos: " . mysqli_error($conn) . "\n";
     }
 } catch (mysqli_sql_exception $e) {
@@ -25,5 +25,3 @@ try {
         echo " Conexión cerrada" . "\n";
     }
 }
-
-?>

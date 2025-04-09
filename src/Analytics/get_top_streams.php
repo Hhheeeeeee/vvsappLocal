@@ -1,15 +1,14 @@
 <?php
 
 
-//$tokenFile = "token.json";
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../Auth/validaToken.php';
+
 $tokenFile = __DIR__ . "/token.json";
 
-require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../validaToken.php';
-//require_once __DIR__ . '/../get_token_test.php';
 
 
-$usuario = validarToken(); // Obtener los datos del usuario autenticado
+validarToken(); // Obtener los datos del usuario autenticado
 
 
 if (!file_exists($tokenFile)) {
@@ -52,7 +51,7 @@ if ($httpCode !== 200) {
 $data = json_decode($response, true);
 $streams = $data['data'] ?? [];
 
-$userIds = array_map(fn($stream) => $stream['user_id'], $streams);
+$userIds = array_map(fn ($stream) => $stream['user_id'], $streams);
 $userIdsQuery = implode("&id=", $userIds);
 $urlUsers = "https://api.twitch.tv/helix/users?id=$userIdsQuery";
 
@@ -80,7 +79,7 @@ foreach ($userData as $user) {
     $usersMap[$user['id']] = $user;
 }
 
-$enrichedStreams = array_map(function($stream) use ($usersMap) {
+$enrichedStreams = array_map(function ($stream) use ($usersMap) {
     $user = $usersMap[$stream['user_id']] ?? [];
     return [
         "stream_id" => $stream['id'],
@@ -93,7 +92,7 @@ $enrichedStreams = array_map(function($stream) use ($usersMap) {
     ];
 }, $streams);
 
-$finalOutput = array_map(function($stream) {
+$finalOutput = array_map(function ($stream) {
     return [
         "stream_id" => $stream['stream_id'],
         "user_id" => $stream['user_id'],
@@ -101,7 +100,7 @@ $finalOutput = array_map(function($stream) {
         "viewer_count" => $stream['viewer_count'],
         "title" => $stream['title'],
         "user_display_name" => $stream['user_display_name'],
-        "profile_image_url" => $stream['profile_image_url'] 
+        "profile_image_url" => $stream['profile_image_url']
     ];
 }, $enrichedStreams);
 
@@ -110,5 +109,3 @@ usort($finalOutput, function ($a, $b) {
 });
 
 echo json_encode($streams, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-

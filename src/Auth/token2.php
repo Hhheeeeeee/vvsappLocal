@@ -3,8 +3,9 @@
 // Se debe instalar un composer.exe (desde el navegador se puede hacer)
 // Ejecutar en linea de comandos:  composer require firebase/php-jwt
 
-require 'vendor/autoload.php';
-require 'config.php';
+require __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config.php';
+
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

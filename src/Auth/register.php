@@ -1,7 +1,7 @@
 <?php
 
-require_once 'config.php';
-require_once 'utils.php';
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../Utils/utils.php';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -17,13 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $email = $data['email'];
-    //$dominio = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'] ?? 'Desconocido';
 
-   /* if (strtolower($dominio) === "desconocido") {
-        http_response_code(500);
-        echo json_encode(["error" => "Internal server error"]);
-        exit;
-    }*/
 
     // Validar formato de email
     $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
@@ -32,14 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode(["error" => "The email must be a valid email address"]);
         exit;
     }
-
-    /*$correo_dominio = explode('@', $email)[1];
-
-    if ($correo_dominio !== $dominio) {
-        http_response_code(400);
-        echo json_encode(["error" => "The email must be a valid email address."]);
-        exit;
-    }*/
 
     http_response_code(200);
     $apiKey = generaAPIkey();

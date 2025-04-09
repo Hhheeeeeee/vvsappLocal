@@ -1,12 +1,15 @@
 <?php
-require_once __DIR__ . '/../validaToken.php';
-require_once __DIR__ . '/../config.php';
+
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../Auth/validaToken.php';
+$dbPath = __DIR__ . "/../../bbdd/data.sqlite";
+
 use Exception;
 
 header('Content-Type: application/json');
 
 // Verificar token
-$usuario = validarToken();
+validarToken();
 
 
 try {
@@ -17,7 +20,6 @@ try {
 }
 
 //Crear archivo data.sqlite (si no existe) y crear tabla top_videos (si no existe)
-$dbPath = __DIR__ . "/../bbdd/data.sqlite";
 if (!file_exists($dbPath)) {
     touch($dbPath); // Crear el archivo vacío si no existe
 }

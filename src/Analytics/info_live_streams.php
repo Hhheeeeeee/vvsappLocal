@@ -1,14 +1,12 @@
 <?php
 
-//$tokenFile = "token.json"; --> heroku selecciona primero lo que esta en la raiz
 $tokenFile = __DIR__ . "/token.json";
 
-require_once __DIR__ . '/../config.php';
-require_once __DIR__ . '/../validaToken.php';
-//require_once __DIR__ . '/../get_token_test.php';
+require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../Auth/validaToken.php';
 
 // Verificar el token antes de ejecutar cualquier código
-$usuario = validarToken(); // Obtener los datos del usuario autenticado
+validarToken(); // Obtener los datos del usuario autenticado
 
 
 if (!file_exists($tokenFile)) {
@@ -76,7 +74,7 @@ if ($httpCode === 200) {
     }
 
     $streams = [];
-    foreach($data['data'] as $stream) {
+    foreach ($data['data'] as $stream) {
         $streams[] = [
             "title" => $stream['title'],
             "user_name" => $stream['user_name'],
@@ -100,7 +98,3 @@ if ($httpCode === 200) {
     http_response_code(500);
     echo json_encode(["error" => "Internal server error."]);
 }
-
-
-
-

@@ -4,13 +4,14 @@
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING);
 
 
-require 'vendor/autoload.php';
-require_once 'config.php';
+require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-function validarToken():void {
+function validarToken(): void
+{
     $secret_key = SECRET_KEY;
     $headers = getallheaders();
 
