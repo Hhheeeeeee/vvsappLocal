@@ -5,8 +5,7 @@ $tokenFile = __DIR__ . "/../Auth/token.json";
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Auth/validaToken.php';
 
-// Verificar el token antes de ejecutar cualquier código
-validarToken(); // Obtener los datos del usuario autenticado
+validarToken();
 
 
 if (!file_exists($tokenFile)) {
@@ -27,12 +26,6 @@ $accessToken = $tokenData['access_token'];
 $clientId = CLIENT_ID;
 $url = "https://api.twitch.tv/helix/streams";
 
-// Imprimir el token y el Client ID que se están usando
-error_log("Access Token: " . $accessToken);
-error_log("Client ID: " . $clientId);
-
-//echo "Using Access Token: " . $accessToken . PHP_EOL;
-//echo "Using Client ID: " . $clientId . PHP_EOL;
 
 
 $ch = curl_init($url);

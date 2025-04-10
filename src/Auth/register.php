@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $data['email'];
 
 
-    // Validar formato de email
     $patron = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/";
     if (!preg_match($patron, $email)) {
         http_response_code(400);
@@ -36,15 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         $conn = new mysqli(SERVERNAME, USERNAME, PASSWORD, DBNAME);
 
-        // Verificar si el usuario ya existe
         $stmt = $conn->prepare("SELECT ID FROM USUARIOS WHERE EMAIL = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            // Actualizar la API Key existente
-            $stmt = $conn->prepare("UPDATE API_KEY SET API_KEY = ?, FECHA_CREACION = CURRENT_TIMESTAMP WHERE USUARIO_ID = ?");
+            $stmt = $conn->prepare(
+                "UPDATE API_KEY 
+                        SET API_KEY = ?, 
+                             FECHA_CREACION = CURRENT_TIMESTAMP 
+                        WHERE USUARIO_ID = ?"
+            );
+
             $stmt->bind_param("si", $apiKey, $row['ID']);
         } else {
             // Insertar nuevo usuario y API Key

@@ -8,7 +8,7 @@ $tokenFile = __DIR__ . "/../Auth/token.json";
 
 
 
-validarToken(); // Obtener los datos del usuario autenticado
+validarToken();
 
 
 if (!file_exists($tokenFile)) {

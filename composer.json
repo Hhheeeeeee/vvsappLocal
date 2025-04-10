@@ -1,8 +1,8 @@
 {
     "require": {
-      "php": "^7.4 || ^8.0",
-        "firebase/php-jwt": "^6.10",
-        "ext-pdo_sqlite": "*",
+      "php": "^7.4",
+      "firebase/php-jwt": "^6.10",
+      "ext-pdo_sqlite": "*",
       "ext-json": "*",
       "ext-curl": "*",
       "ext-mysqli": "*",
