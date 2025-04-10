@@ -1,8 +1,8 @@
 <?php
 
-$tokenFile = __DIR__ . "/token.json";
+$tokenFile = __DIR__ . "/../Auth/token.json";
 
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Auth/validaToken.php';
 
 // Verificar el token antes de ejecutar cualquier código

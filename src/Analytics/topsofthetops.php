@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Auth/validaToken.php';
-$dbPath = __DIR__ . "/../../bbdd/data.sqlite";
+$dbPath = __DIR__ . "/../bbdd/data.sqlite";
 
 use Exception;
 
@@ -59,7 +59,7 @@ if (count($cached) > 0 && !isset($_GET["since"])) {
 }
 
 // Obtener token válido
-$tokenFile = __DIR__ . "/token.json";
+$tokenFile = __DIR__ . "/../Auth/token.json";
 if (!file_exists($tokenFile)) {
     http_response_code(500);
     echo json_encode(["error" => "Twitch token not found"]);

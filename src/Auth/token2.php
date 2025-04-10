@@ -4,7 +4,7 @@
 // Ejecutar en linea de comandos:  composer require firebase/php-jwt
 
 require __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../config/config.php';
 
 
 use Firebase\JWT\JWT;
