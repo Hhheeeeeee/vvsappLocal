@@ -1,6 +1,6 @@
 {
     "require": {
-      "php": "^7.4",
+      "php": "^7.4  || ^8.0",
       "firebase/php-jwt": "^6.10",
       "ext-pdo_sqlite": "*",
       "ext-json": "*",
