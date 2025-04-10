@@ -1,27 +1,24 @@
 <?php
 
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Auth/validaToken.php';
 
-$tokenFile = __DIR__ . "/token.json";
+$tokenFile = __DIR__ . "/../Auth/token.json";
 
-// Verificar el token antes de ejecutar cualquier código
-validarToken(); // Obtener los datos del usuario autenticado
+validarToken();
 
 if (php_sapi_name() == "cli") {
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
 }
 
-if (!isset($_GET['id']) || empty($_GET['id'])) {
+if (empty($_GET['id'])) {
     http_response_code(400);
     echo json_encode(["error" => "Invalid or missing 'id' parameter."]);
     exit;
 }
 
 $userId = htmlspecialchars($_GET['id']);
-//$tokenFile = "token.json";
 
-// Verificar si el token de Twitch es válido
 if (!file_exists($tokenFile)) {
     http_response_code(401);
     echo json_encode(["error" => "Unauthorized. No valid token found."]);

@@ -1,10 +1,11 @@
 <?php
 
-require_once 'config.php';
+require_once __DIR__ . '/../../config/config.php';
 
-$tokenFile = __DIR__ . "/Analytics/token.json"; // Accede al archivo 'token.json' dentro de la carpeta 'analytics'
+$tokenFile = __DIR__ . "/token.json";
 
-function getNewToken() {
+function getNewToken()
+{
     $params = [
         'client_id' => CLIENT_ID,
         'client_secret' => CLIENT_SECRET,
@@ -47,7 +48,8 @@ function getNewToken() {
     return $tokenData;
 }
 
-function getToken() {
+function getToken()
+{
     global $tokenFile;
 
     if (file_exists($tokenFile)) {
@@ -59,4 +61,3 @@ function getToken() {
 
     return getNewToken();
 }
-

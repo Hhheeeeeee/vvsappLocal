@@ -1,14 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../Auth/validaToken.php';
-$dbPath = __DIR__ . "/../../bbdd/data.sqlite";
+$dbPath = __DIR__ . "/../bbdd/data.sqlite";
 
 use Exception;
 
 header('Content-Type: application/json');
 
-// Verificar token
 validarToken();
 
 
@@ -19,12 +18,9 @@ try {
     echo "Error al conectar a la base de datos: " . $e->getMessage();
 }
 
-//Crear archivo data.sqlite (si no existe) y crear tabla top_videos (si no existe)
 if (!file_exists($dbPath)) {
-    touch($dbPath); // Crear el archivo vacío si no existe
+    touch($dbPath);
 }
-
-// Crear la tabla `top_videos`
 
 
 try {
@@ -49,7 +45,6 @@ try {
 }
 
 
-// Comprobar caché (menos de 10 minutos)
 $stmt = $db->query("SELECT * FROM top_videos WHERE cached_at >= datetime('now', '-10 minutes')");
 $cached = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -58,8 +53,7 @@ if (count($cached) > 0 && !isset($_GET["since"])) {
     exit;
 }
 
-// Obtener token válido
-$tokenFile = __DIR__ . "/token.json";
+$tokenFile = __DIR__ . "/../Auth/token.json";
 if (!file_exists($tokenFile)) {
     http_response_code(500);
     echo json_encode(["error" => "Twitch token not found"]);
@@ -69,8 +63,8 @@ $tokenData = json_decode(file_get_contents($tokenFile), true);
 $accessToken = $tokenData["access_token"];
 $clientId = CLIENT_ID;
 
-// 1. Obtener los 3 juegos más populares
-function httpRequest($url, $headers = []) {
+function httpRequest($url, $headers = [])
+{
     $conn = curl_init($url);
     curl_setopt($conn, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($conn, CURLOPT_HTTPHEADER, $headers);
@@ -111,7 +105,6 @@ foreach ($gamesData["data"] as $game) {
     $gameId = $game["id"];
     $gameName = $game["name"];
 
-    // 2. Obtener vídeos del juego
     $videosUrl = "https://api.twitch.tv/helix/videos?game_id=$gameId&first=40&sort=views";
     $videosResponse = httpRequest($videosUrl, $headers);
     $videosData = json_decode($videosResponse, true);
@@ -134,8 +127,30 @@ foreach ($gamesData["data"] as $game) {
             "most_viewed_created_at" => $mostViewed["created_at"]
         ];
 
-        $stmt = $db->prepare("INSERT INTO top_videos (game_id, game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at)
-         VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, :most_viewed_title, :most_viewed_views, :most_viewed_duration, :most_viewed_created_at)");
+        $stmt = $db->prepare(
+            "INSERT INTO top_videos (
+        game_id,
+        game_name,
+        user_name,
+        total_videos,
+        total_views,
+        most_viewed_title,
+        most_viewed_views,
+        most_viewed_duration,
+        most_viewed_created_at
+    ) VALUES (
+        :game_id,
+        :game_name,
+        :user_name,
+        :total_videos,
+        :total_views,
+        :most_viewed_title,
+        :most_viewed_views,
+        :most_viewed_duration,
+        :most_viewed_created_at
+    )"
+        );
+
         $stmt->execute($entry);
 
         $results[] = $entry;
@@ -143,4 +158,3 @@ foreach ($gamesData["data"] as $game) {
 }
 
 echo json_encode($results, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-?>
